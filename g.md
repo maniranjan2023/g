@@ -185,4 +185,65 @@ public:
 };
 ```
 
+## Topological Sort
+```
+class Solution {
+  private:
+    void dfs(int start, vector<int> &vis, stack<int> &st, vector<vector<int>> &adj){
+        vis[start]=1;
+        for(auto it: adj[start]){
+            if(!vis[it]){
+                dfs(it, vis, st, adj);
+            }
+        }
+        st.push(start);
+    }
+  public:
+    // Function to return list containing vertices in Topological order.
+    vector<int> topologicalSort(vector<vector<int>>& adj) {
+        // Your code here
+        int n = adj.size();
+        vector<int> vis(n,0);
+        stack<int> st;
+        for(int i=0;i<n;i++){
+            if(!vis[i]){
+                dfs(i, vis, st, adj);
+            }
+        }
+        vector<int> ans;
+        while(!st.empty()){
+            ans.push_back(st.top());
+            st.pop();
+        }
+        return ans;
+    }
+};
+```
+## Kahn's Algorithm
+```
+vector<int> indegree(n,0);
+for(int i=0;i<n;i++){
+    for(auto it: adj[i]){
+        indegree[it]++;
+    }
+}
+queue<int> q;
+for(int i=0;i<n;i++){
+    if(indegree[i]==0){
+        q.push(i);
+    }
+}
+vector<int> topo;
+    while(!q.empty()){
+        int node = q.front();
+        q.pop();
+        topo.push_back(node);
+        for(auto it: adj[node]){
+            indegree[it]--;
+            if(indegree[it]==0) q.push(it);
+        }
+    }
+return topo;
+```
+
 
