@@ -67,17 +67,15 @@ if(visited[u]==false){
 }
 
 
-# Code for detect cycle in undirected graph using BFS :
+## Code for detect cycle in undirected graph using BFS :
    bool bfs(int start, vector<int> adj[], vector<bool> &visited) {
     queue<pair<int, int>> q;   // for track of parents
     q.push({start, -1}); 
     visited[start] = true;
-
     while (!q.empty()) {
         int node = q.front().first;
         int parent = q.front().second;
         q.pop();
-
         for (int neighbor : adj[node]) {
             if (!visited[neighbor]) {  
                 visited[neighbor] = true;
@@ -90,10 +88,8 @@ if(visited[u]==false){
     }
     return false;
 }
-
 bool detectCycle(int V, vector<int> adj[]) {
     vector<bool> visited(V, false);
-
     for (int i = 0; i < V; i++) { 
         if (!visited[i]) {  
             if (bfs(i, adj, visited)) {
