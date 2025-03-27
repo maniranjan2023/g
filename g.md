@@ -67,35 +67,71 @@ if(visited[u]==false){
 }
 
 
-## Code for detect cycle in undirected graph using BFS :
-   bool bfs(int start, vector<int> adj[], vector<bool> &visited) {
-    queue<pair<int, int>> q;   // for track of parents
-    q.push({start, -1}); 
-    visited[start] = true;
-    while (!q.empty()) {
-        int node = q.front().first;
-        int parent = q.front().second;
-        q.pop();
-        for (int neighbor : adj[node]) {
-            if (!visited[neighbor]) {  
-                visited[neighbor] = true;
-                q.push({neighbor, node});
-            }   
-            else if (neighbor != parent) {  
-                return true;  
-            }
+
+## Cycle Detection
+```
+//DFS
+class Solution {
+  private:
+    bool detect(int src,int parent, vector<vector<int>> &adj, vector<int> &vis){
+        vis[src] = 1;
+        for(auto it: adj[src]){
+            if(it==parent) continue;
+            if(vis[it]==1) return true;
+            else if(detect(it,src,adj,vis)) return true;
         }
+        return false;
     }
-    return false;
-}
-bool detectCycle(int V, vector<int> adj[]) {
-    vector<bool> visited(V, false);
-    for (int i = 0; i < V; i++) { 
-        if (!visited[i]) {  
-            if (bfs(i, adj, visited)) {
+  public:
+    // Function to detect cycle in an undirected graph.
+    bool isCycle(vector<vector<int>>& adj) {
+        int n = adj.size();
+        vector<int> vis(n,0);
+        for(int i=0;i<n;i++){
+            if(!vis[i] && detect(i,-1, adj, vis)){
                 return true;
             }
         }
+        return false;
     }
-    return false;
-}
+};
+```
+
+```
+//BFS
+class Solution {
+  private:
+    bool detect(int src, vector<vector<int>> &adj, vector<int> &vis){
+        vis[src] = 1;
+        queue<pair<int,int>> q; 
+        q.push({src, -1});
+        while(!q.empty()){
+            int node = q.front().first;
+            int parent = q.front().second;
+            q.pop();
+            for(auto it: adj[node]){
+                if(!vis[it]){
+                    vis[it]=1;
+                    q.push({it, node});
+                } else if(parent!=it) return true;
+            }
+        }
+        return false;
+    }
+  public:
+    // Function to detect cycle in an undirected graph.
+    bool isCycle(vector<vector<int>>& adj) {
+        // Code here
+        int n = adj.size();
+        vector<int> vis(n,0);
+        for(int i=0;i<n;i++){
+            if(!vis[i] && detect(i, adj, vis)){
+                return true;
+            }
+        }
+        return false;
+    }
+};
+```
+
+
