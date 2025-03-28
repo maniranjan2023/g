@@ -1,4 +1,5 @@
 ## Code for basic implementation of BFS:
+```
 // In question adjancey matrix or list is given
 
 void bfs(vector<int> adj[], int v, int s) {
@@ -18,10 +19,11 @@ void bfs(vector<int> adj[], int v, int s) {
         }
     }
 }
+```
 
 
 ## code for when no source is given or graph may be disconnected (similar to no of components) )
-
+```
 void bfsDis(vector<int>adj[], int v){
    vector<bool>visited(v+1, false);
     int cnt=0
@@ -36,9 +38,11 @@ void bfsDis(vector<int>adj[], int v){
 }
 }
 
-
+```
 ## convert edge list ( vector<vector<int>>& edges ) into adjacency list
- // Convert edge list to adjacency list
+
+ ```
+// Convert edge list to adjacency list
     for (auto& edge : edges) {
         adj[edge[0]].push_back(edge[1]);
         adj[edge[1]].push_back(edge[0]);  
@@ -66,8 +70,7 @@ if(visited[u]==false){
 }
 }
 
-
-
+```
 ## Cycle Detection
 ```
 //DFS
@@ -244,6 +247,94 @@ vector<int> topo;
         }
     }
 return topo;
+```
+
+## Detect cycle in directed graph using dfs
+```
+class Solution {
+private:
+    bool dfs(int node, vector<int> adj[], vector<int> &visited, vector<int> &recStack) {
+        visited[node] = 1;  // Mark as visited
+        recStack[node] = 1; // Add to recursion stack
+        
+        for(auto neighbor : adj[node]) {
+            if(!visited[neighbor]) { // If not visited, recurse
+                if(dfs(neighbor, adj, visited, recStack)) 
+                    return true; // Cycle found
+            } 
+            else if(recStack[neighbor]) {
+                return true; // Found a back edge (cycle)
+            }
+        }
+        
+        recStack[node] = 0; // Remove from recursion stack
+        return false;
+    }
+
+public:
+    bool isCyclic(int V, vector<int> adj[]) {
+        vector<int> visited(V, 0);
+        vector<int> recStack(V, 0);
+
+        for(int i = 0; i < V; i++) {
+            if(!visited[i]) {
+                if(dfs(i, adj, visited, recStack))
+                    return true; // Cycle found
+            }
+        }
+        return false; // No cycle
+    }
+};
+
+
+
+```
+
+
+## Detect Cycle in undirected graph using bfs
+```
+   // here use the concept of khans algorithm as it is only valid for directed acyclic graph and if the value of count is not equal to total no. of vertex then it showed that cycle is present in graph and if it equal to total no of vertex then it follow khans algorithm hence no cycle is present.
+class Solution {
+public:
+    bool isCyclic(int V, vector<int> adj[]) {
+        vector<int> indegree(V, 0);
+        
+        // Calculate in-degree of each node
+        for(int i = 0; i < V; i++) {
+            for(auto it : adj[i]) {
+                indegree[it]++;
+            }
+        }
+        
+        queue<int> q;
+        int count = 0; // Track processed nodes
+        
+        // Push nodes with in-degree = 0
+        for(int i = 0; i < V; i++) {
+            if(indegree[i] == 0) {
+                q.push(i);
+            }
+        }
+        
+        while(!q.empty()) {
+            int node = q.front();
+            q.pop();
+            count++; // Processed one node
+            
+            // Reduce in-degree of neighbors
+            for(auto it : adj[node]) {
+                indegree[it]--;
+                if(indegree[it] == 0) {
+                    q.push(it);
+                }
+            }
+        }
+        
+        // If all nodes are present then it is asyclic else it has cycle
+        return (count != V);
+    }
+};
+
 ```
 
 
